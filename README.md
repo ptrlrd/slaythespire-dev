@@ -2,11 +2,11 @@
 
 A community index of tooling for Slay the Spire and Slay the Spire 2: game bridges, modding foundations, simulators, bots, seed and run tools, datasets and research, plus a guide to what building each layer takes.
 
-Live site: https://ptrlrd.github.io/slaythespire-dev/
+Live site: https://slaythespire.dev
 
 ## Adding an entry
 
-Each project, paper and dataset is one Markdown file under `src/content/`. Copy an existing file, edit the fields and open a pull request. The build validates every field, and the [contribute page](https://ptrlrd.github.io/slaythespire-dev/contribute/) lists the allowed values.
+Each project, paper and dataset is one Markdown file under `src/content/`. Copy an existing file, edit the fields and open a pull request. The build validates every field, and the [contribute page](https://slaythespire.dev/contribute/) lists the allowed values.
 
 ## Running locally
 
