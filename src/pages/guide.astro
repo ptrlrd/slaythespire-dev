@@ -2,8 +2,17 @@
 import Base from "../layouts/Base.astro";
 import { url } from "../lib/labels";
 const p = (id: string) => url(`projects/${id}/`);
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  headline: "What it takes to build Slay the Spire tooling",
+  description: "The layers of a Slay the Spire bot or tool, what has been tried at each one, and where the hard problems are.",
+  url: new URL(Astro.url.pathname, Astro.site).href,
+  about: [{ "@type": "VideoGame", name: "Slay the Spire" }, { "@type": "VideoGame", name: "Slay the Spire 2" }],
+  inLanguage: "en",
+};
 ---
-<Base title="What it takes" description="The layers of a Slay the Spire bot or tool, what has been tried at each one, and where the hard problems are.">
+<Base title="What it takes to build a Slay the Spire bot or tool" description="The layers of a Slay the Spire bot or tool, what has been tried at each one, and where the hard problems are." type="article" jsonLd={jsonLd}>
   <div class="wrap page-head">
     <h1>What it takes</h1>
     <p>

@@ -1,0 +1,25 @@
+---
+import Base from "../layouts/Base.astro";
+import { url } from "../lib/labels";
+---
+<Base title="Page not found" noindex>
+  <div class="wrap page-head missing">
+    <h1>That floor doesn't exist.</h1>
+    <p>The page may have moved. Try the project list or the guide.</p>
+    <p class="actions">
+      <a class="btn" href={url("projects/")}>Browse projects</a>
+      <a class="btn ghost" href={url("")}>Home</a>
+    </p>
+  </div>
+</Base>
+
+<style>
+  .missing {
+    padding: 120px 0 140px;
+  }
+  .actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+</style>

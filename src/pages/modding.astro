@@ -2,6 +2,14 @@
 import Base from "../layouts/Base.astro";
 import { url } from "../lib/labels";
 const p = (id: string) => url(`projects/${id}/`);
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  headline: "Getting into Slay the Spire and Slay the Spire 2 modding",
+  description: "How to start modding Slay the Spire and Slay the Spire 2, with the loaders, templates, tutorials and tools for each.",
+  url: new URL(Astro.url.pathname, Astro.site).href,
+  inLanguage: "en",
+};
 
 const sts1 = [
   ["ModTheSpire wiki", "https://github.com/kiooeht/ModTheSpire/wiki", "Loader setup and SpirePatch, the system every mod uses to change game code."],
@@ -23,7 +31,7 @@ const sts2 = [
   ["Steam Workshop", "https://steamcommunity.com/app/2868840/workshop/", "Where Slay the Spire 2 mods are published and installed."],
 ];
 ---
-<Base title="Modding" description="How to start modding Slay the Spire and Slay the Spire 2, with the loaders, templates, tutorials and tools for each.">
+<Base title="How to mod Slay the Spire and Slay the Spire 2" type="article" jsonLd={jsonLd} description="How to start modding Slay the Spire and Slay the Spire 2, with the loaders, templates, tutorials and tools for each.">
   <div class="wrap page-head">
     <h1>Getting into modding</h1>
     <p>
@@ -98,9 +106,6 @@ const sts2 = [
     gap: 28px;
     padding: 24px 0 40px;
     align-items: start;
-  }
-  .game {
-    border-top: 6px solid var(--accent);
   }
   .sts1 {
     --accent: var(--sts1);
