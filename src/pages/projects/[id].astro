@@ -50,15 +50,17 @@ const facts = [
 ];
 ---
 <Base title={`${p.name}: ${p.games.length > 1 ? "Slay the Spire 1 & 2" : GAME_LABEL[p.games[0]]} ${CATEGORY[p.category].label.toLowerCase()}`} description={p.summary} jsonLd={jsonLd}>
-  <div class="wrap page-head">
-    <p class="crumb"><a href={url("projects/")}>Projects</a> / {CATEGORY[p.category].label}</p>
-    <div class="tags">{p.games.map((g) => <span class={`tag ${g}`}>{GAME_LABEL[g]}</span>)}</div>
-    <h1>{p.name}</h1>
-    <p>{p.summary}</p>
-    <p><a class="btn" href={p.url}>{p.repo ? "View on GitHub" : "Visit project"}</a></p>
-  </div>
   <div class="wrap layout">
-    <article class="prose"><Content /></article>
+    <div class="main">
+      <div class="page-head">
+        <p class="crumb"><a href={url("projects/")}>Projects</a> / {CATEGORY[p.category].label}</p>
+        <div class="tags">{p.games.map((g) => <span class={`tag ${g}`}>{GAME_LABEL[g]}</span>)}</div>
+        <h1>{p.name}</h1>
+        <p>{p.summary}</p>
+        <p><a class="btn" href={p.url}>{p.repo ? "View on GitHub" : "Visit project"}</a></p>
+      </div>
+      <article class="prose"><Content /></article>
+    </div>
     <aside class="card">
       <dl class="card-body">
         {facts.map(([k, v]) => (<><dt>{k}</dt><dd>{v}</dd></>))}
@@ -85,9 +87,14 @@ const facts = [
   .layout {
     display: grid;
     grid-template-columns: 1fr 300px;
-    gap: 40px;
+    gap: 48px;
     align-items: start;
-    padding: 24px 0 32px;
+    padding: 0 0 32px;
+  }
+  aside {
+    margin-top: 72px;
+    position: sticky;
+    top: 96px;
   }
   dl {
     margin: 0;
@@ -113,6 +120,10 @@ const facts = [
   @media (max-width: 860px) {
     .layout {
       grid-template-columns: 1fr;
+    }
+    aside {
+      margin-top: 0;
+      position: static;
     }
   }
 </style>
