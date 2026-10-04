@@ -1,0 +1,84 @@
+---
+import TornEdge from "./TornEdge.astro";
+import { url } from "../lib/labels";
+const year = new Date().getFullYear();
+---
+<footer>
+  <TornEdge color="var(--navy-deep)" seed={41} />
+  <div class="foot">
+    <div class="wrap cols">
+      <div>
+        <p class="name">Slay the Spire <b>Dev</b></p>
+        <p>A community index of bots, agents, simulators and tools for Slay the Spire and Slay the Spire 2.</p>
+      </div>
+      <div>
+        <p class="h">Browse</p>
+        <a href={url("projects/")}>Projects</a>
+        <a href={url("guide/")}>Building a bot</a>
+        <a href={url("approaches/")}>Approaches</a>
+        <a href={url("papers/")}>Papers</a>
+        <a href={url("datasets/")}>Datasets</a>
+      </div>
+      <div>
+        <p class="h">Help out</p>
+        <a href={url("contribute/")}>Add a project</a>
+        <a href="https://github.com/ptrlrd/slaythespire-dev/issues">Report a broken link</a>
+        <a href="https://github.com/ptrlrd/slaythespire-dev">Source on GitHub</a>
+      </div>
+    </div>
+    <p class="wrap legal">
+      Fan-made community resource, not affiliated with or endorsed by Mega Crit. Slay the Spire, Slay the Spire 2 and their
+      key art are © Mega Crit, LLC. Project descriptions summarize each project's own documentation; follow the links for the
+      authoritative version. © {year}
+    </p>
+  </div>
+</footer>
+
+<style>
+  .foot {
+    background: var(--navy-deep);
+    padding: 40px 0 28px;
+    color: var(--mist);
+    font-size: 0.92rem;
+  }
+  .cols {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 32px;
+  }
+  .cols a {
+    display: block;
+    color: var(--cream);
+    text-decoration: none;
+    margin-bottom: 6px;
+  }
+  .cols a:hover {
+    color: var(--gold);
+  }
+  .name {
+    color: var(--cream);
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-top: 0;
+  }
+  .name b {
+    color: var(--gold);
+  }
+  .h {
+    color: var(--white);
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-top: 0;
+  }
+  .legal {
+    margin-top: 32px;
+    padding-top: 20px;
+    border-top: 1px solid var(--navy-card);
+    font-size: 0.8rem;
+  }
+  @media (max-width: 700px) {
+    .cols {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

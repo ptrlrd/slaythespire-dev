@@ -1,0 +1,43 @@
+---
+import { getCollection } from "astro:content";
+import Base from "../layouts/Base.astro";
+import { APPROACH, GAME_LABEL } from "../lib/labels";
+
+const papers = (await getCollection("papers")).sort((a, b) => b.data.year - a.data.year || a.data.title.localeCompare(b.data.title));
+const KIND = { paper: "Paper", thesis: "Thesis", post: "Write-up", talk: "Talk" } as const;
+---
+<Base title="Papers" description="Research papers, theses, talks and write-ups about AI and analysis for Slay the Spire.">
+  <div class="wrap page-head">
+    <h1>Papers & write-ups</h1>
+    <p>Research, theses, conference talks and long-form posts, newest first. Each takeaway summarizes the source's own abstract or text.</p>
+  </div>
+  <div class="wrap list">
+    {papers.map((r) => (
+      <article class="card">
+        <div class="card-body">
+          <div class="tags">
+            <span class="tag">{KIND[r.data.kind]}</span>
+            {r.data.games.map((g) => <span class={`tag ${g}`}>{GAME_LABEL[g]}</span>)}
+            {r.data.approaches.filter((a) => a !== "tooling").map((a) => <span class="tag quiet">{APPROACH[a].short}</span>)}
+          </div>
+          <h3><a href={r.data.url}>{r.data.title}</a></h3>
+          <p class="meta">{r.data.authors} · {r.data.year}</p>
+          <p class="take">{r.data.takeaway}</p>
+        </div>
+      </article>
+    ))}
+  </div>
+</Base>
+
+<style>
+  .list {
+    display: grid;
+    gap: 20px;
+    padding: 24px 0 80px;
+    max-width: 900px;
+  }
+  .take {
+    margin: 0;
+    color: #dce6ec;
+  }
+</style>

@@ -1,0 +1,143 @@
+---
+import { getCollection } from "astro:content";
+import Base from "../layouts/Base.astro";
+import { APPROACH, CATEGORY, url } from "../lib/labels";
+
+const projects = await getCollection("projects");
+const papers = await getCollection("papers");
+
+const notes: Record<string, { what: string; good: string; hard: string }> = {
+  rules: {
+    what: "Hand-written priorities and conditions: which cards to take, which events to accept, when to rest.",
+    good: "Fast, explainable, and needs no data. Bottled AI wins 20–52% depending on character with rules plus combat search.",
+    hard: "Every interaction has to be written by hand, and a list tuned for one deck plays badly with another.",
+  },
+  search: {
+    what: "Trying sequences of actions in a model of the game and keeping the best outcome, from exhaustive hand orderings to MCTS.",
+    good: "Combat. Every strong bot in this index searches during fights.",
+    hard: "Needs a fast, accurate simulator. Knowing the real RNG makes search look stronger than it is.",
+  },
+  rl: {
+    what: "Policies trained from game outcomes, usually inside a simulator.",
+    good: "Out-of-combat choices on top of combat search, where it beats hand-written heuristics.",
+    hard: "Sparse, delayed reward over 50-plus floors. Learning combat directly has mostly failed so far.",
+  },
+  imitation: {
+    what: "Models trained to copy decisions from human runs or from a stronger bot.",
+    good: "Bootstrapping a policy, distilling a slow search into a fast network, and pick or damage advisors.",
+    hard: "Human data inherits human mistakes; bot data caps the student at the teacher.",
+  },
+  llm: {
+    what: "Language models given the game state as text and asked for the next action, sometimes with tools, memory or fine-tuning.",
+    good: "Quick to start, readable reasoning, works across both games with the same bridge.",
+    hard: "Slow and expensive per decision, weak at long-horizon planning without help, and results vary between models.",
+  },
+};
+const order = ["rules", "search", "rl", "imitation", "llm"] as const;
+---
+<Base title="Approaches" description="Rules, search, reinforcement learning, learning from runs and language models: how each has been used for Slay the Spire bots, with the projects that tried it.">
+  <div class="wrap page-head">
+    <h1>Approaches</h1>
+    <p>Five families of technique show up across Slay the Spire projects. Most strong bots mix two or more.</p>
+    <nav class="jump">
+      {order.map((k) => <a class="tag quiet" href={`#${k}`}>{APPROACH[k].label}</a>)}
+    </nav>
+  </div>
+  <div class="wrap list">
+    {order.map((k) => {
+      const ps = projects.filter((p) => p.data.approaches.includes(k)).sort((a, b) => a.data.name.localeCompare(b.data.name));
+      const rs = papers.filter((p) => p.data.approaches.includes(k));
+      return (
+        <section id={k} class="card">
+          <div class="card-body">
+            <h2>{APPROACH[k].label}</h2>
+            <p class="what">{notes[k].what}</p>
+            <div class="cols">
+              <div><p class="h">Works for</p><p>{notes[k].good}</p></div>
+              <div><p class="h">Watch out for</p><p>{notes[k].hard}</p></div>
+            </div>
+            <p class="h">Projects ({ps.length})</p>
+            <ul class="items">
+              {ps.map((p) => (
+                <li>
+                  <a href={url(`projects/${p.id}/`)}>{p.data.name}</a>
+                  <span class="meta"> · {CATEGORY[p.data.category].label} · {p.data.games.map((g) => g.toUpperCase()).join(", ")}</span>
+                </li>
+              ))}
+            </ul>
+            {rs.length > 0 && (
+              <>
+                <p class="h">Papers and write-ups ({rs.length})</p>
+                <ul class="items">
+                  {rs.map((r) => <li><a href={r.data.url}>{r.data.title}</a> <span class="meta">· {r.data.year}</span></li>)}
+                </ul>
+              </>
+            )}
+          </div>
+        </section>
+      );
+    })}
+  </div>
+</Base>
+
+<style>
+  .jump {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .jump a {
+    text-decoration: none;
+    font-size: 0.75rem;
+  }
+  .list {
+    display: grid;
+    gap: 28px;
+    padding: 24px 0 80px;
+  }
+  section {
+    scroll-margin-top: 90px;
+  }
+  h2 {
+    color: var(--gold);
+    font-size: 1.6rem;
+  }
+  .what {
+    font-size: 1.1rem;
+    margin: 0;
+  }
+  .cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+  .cols p {
+    margin: 0;
+    color: #dce6ec;
+  }
+  .h {
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.78rem;
+    color: var(--mist);
+    margin: 8px 0 4px;
+  }
+  .items {
+    columns: 2;
+    column-gap: 32px;
+    margin: 0;
+    padding-left: 1.1em;
+  }
+  .items li {
+    break-inside: avoid;
+    margin-bottom: 4px;
+  }
+  @media (max-width: 760px) {
+    .cols {
+      grid-template-columns: 1fr;
+    }
+    .items {
+      columns: 1;
+    }
+  }
+</style>
