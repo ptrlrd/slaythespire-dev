@@ -28,3 +28,5 @@ export const STATUS = {
 } as const;
 
 export const url = (path: string) => `${import.meta.env.BASE_URL.replace(/\/$/, "")}/${path.replace(/^\//, "")}`;
+
+export const SUGGEST_URL = "https://github.com/ptrlrd/slaythespire-dev/issues/new?template=suggest-project.yml";

@@ -1,5 +1,4 @@
 ---
-import Logo from "./Logo.astro";
 import { url } from "../lib/labels";
 
 const links = [
@@ -8,6 +7,7 @@ const links = [
   ["Approaches", "approaches/"],
   ["Papers", "papers/"],
   ["Datasets", "datasets/"],
+  ["Modding", "modding/"],
   ["Contribute", "contribute/"],
 ];
 const here = Astro.url.pathname;
@@ -15,7 +15,6 @@ const here = Astro.url.pathname;
 <header class="site-header">
   <div class="bar">
     <a class="brand" href={url("")}>
-      <Logo />
       <span>Slay the Spire <b>Dev</b></span>
     </a>
     <input id="nav-toggle" type="checkbox" class="sr-only" />
@@ -48,9 +47,6 @@ const here = Astro.url.pathname;
     gap: 16px;
   }
   .brand {
-    display: flex;
-    align-items: center;
-    gap: 10px;
     color: var(--cream);
     text-decoration: none;
     font-weight: 600;

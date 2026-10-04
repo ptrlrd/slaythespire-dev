@@ -4,7 +4,7 @@ import Base from "../layouts/Base.astro";
 import Hero from "../components/Hero.astro";
 import TornEdge from "../components/TornEdge.astro";
 import ProjectCard from "../components/ProjectCard.astro";
-import { CATEGORY, url } from "../lib/labels";
+import { CATEGORY, SUGGEST_URL, url } from "../lib/labels";
 
 const projects = await getCollection("projects");
 const papers = await getCollection("papers");
@@ -91,11 +91,40 @@ const start = [
 
   <section class="section tight">
     <div class="wrap">
+      <div class="mod-box">
+        <div class="mod-text">
+          <h2>New to modding?</h2>
+          <p>
+            Most tooling starts as a mod. Slay the Spire mods are Java on ModTheSpire and BaseMod; Slay the Spire 2 mods
+            are C# on the game's official mod support. The modding page has a step-by-step path and the templates,
+            tutorials and decompilers for each game.
+          </p>
+          <a class="btn" href={url("modding/")}>Start modding</a>
+        </div>
+        <div class="mod-games">
+          <a class="mod-game sts1" href={url("modding/")}>
+            <span class="tag sts1">Slay the Spire</span>
+            <span>Java · ModTheSpire · BaseMod · BasicMod tutorial</span>
+          </a>
+          <a class="mod-game sts2" href={url("modding/")}>
+            <span class="tag sts2">Slay the Spire 2</span>
+            <span>C# · Godot · BaseLib · ModTemplate · official uploader</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section tight">
+    <div class="wrap">
       <h2 class="section-title">Featured Projects</h2>
       <div class="grid">
         {featured.map((p) => <ProjectCard project={p} />)}
       </div>
-      <p class="center"><a class="btn ghost" href={url("projects/")}>See all {projects.length} projects</a></p>
+      <p class="center actions-row">
+        <a class="btn ghost" href={url("projects/")}>See all {projects.length} projects</a>
+        <a class="btn ghost" href={SUGGEST_URL}>Suggest a project</a>
+      </p>
     </div>
   </section>
 
@@ -198,6 +227,69 @@ const start = [
   .center {
     text-align: center;
     margin-top: 36px;
+  }
+  .actions-row {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .mod-box {
+    display: grid;
+    grid-template-columns: 1.3fr 1fr;
+    gap: 32px;
+    align-items: center;
+    background: var(--cream);
+    color: var(--cream-ink);
+    border-radius: 14px;
+    padding: 36px 40px;
+    box-shadow: var(--shadow);
+  }
+  .mod-box h2 {
+    font-size: clamp(1.6rem, 3vw, 2.1rem);
+  }
+  .mod-box p {
+    margin: 0 0 20px;
+    font-size: 1.05rem;
+  }
+  .mod-box .btn {
+    background: var(--navy);
+    border-color: var(--navy);
+    color: var(--cream);
+  }
+  .mod-games {
+    display: grid;
+    gap: 14px;
+  }
+  .mod-game {
+    display: grid;
+    gap: 8px;
+    padding: 18px 20px;
+    border-radius: var(--radius);
+    background: var(--navy);
+    color: var(--cream);
+    text-decoration: none;
+    border-left: 6px solid var(--accent);
+    transition: transform 0.15s;
+  }
+  .mod-game:hover {
+    transform: translateX(4px);
+    color: var(--white);
+  }
+  .mod-game.sts1 {
+    --accent: var(--sts1);
+  }
+  .mod-game.sts2 {
+    --accent: var(--sts2);
+  }
+  .mod-game .tag {
+    justify-self: start;
+  }
+  @media (max-width: 800px) {
+    .mod-box {
+      grid-template-columns: 1fr;
+      padding: 28px 24px;
+    }
   }
   .cats {
     display: grid;

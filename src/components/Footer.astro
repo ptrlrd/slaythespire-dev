@@ -1,6 +1,6 @@
 ---
 import TornEdge from "./TornEdge.astro";
-import { url } from "../lib/labels";
+import { SUGGEST_URL, url } from "../lib/labels";
 const year = new Date().getFullYear();
 ---
 <footer>
@@ -14,14 +14,16 @@ const year = new Date().getFullYear();
       <div>
         <p class="h">Browse</p>
         <a href={url("projects/")}>Projects</a>
-        <a href={url("guide/")}>Building a bot</a>
+        <a href={url("guide/")}>What it takes</a>
         <a href={url("approaches/")}>Approaches</a>
         <a href={url("papers/")}>Papers</a>
         <a href={url("datasets/")}>Datasets</a>
+        <a href={url("modding/")}>Modding</a>
       </div>
       <div>
         <p class="h">Help out</p>
-        <a href={url("contribute/")}>Add a project</a>
+        <a href={SUGGEST_URL}>Suggest a project</a>
+        <a href={url("contribute/")}>Write an entry</a>
         <a href="https://github.com/ptrlrd/slaythespire-dev/issues">Report a broken link</a>
         <a href="https://github.com/ptrlrd/slaythespire-dev">Source on GitHub</a>
       </div>

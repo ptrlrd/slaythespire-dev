@@ -1,10 +1,12 @@
 ---
 import Base from "../layouts/Base.astro";
+import { SUGGEST_URL } from "../lib/labels";
 ---
 <Base title="Contribute" description="How to add a project, paper or dataset to the Slay the Spire Dev index.">
   <div class="wrap page-head">
     <h1>Add to the index</h1>
-    <p>Each entry is one Markdown file. Open a pull request with a new file, or open an issue if you'd rather someone else write it.</p>
+    <p>The quickest way is the suggestion form: name, link and a sentence on what it does. To write the entry yourself, open a pull request with one Markdown file.</p>
+    <p><a class="btn" href={SUGGEST_URL}>Suggest a project</a></p>
   </div>
   <div class="wrap prose body">
     <h2>Add a project</h2>

@@ -2,7 +2,7 @@
 import { getCollection } from "astro:content";
 import Base from "../../layouts/Base.astro";
 import ProjectCard from "../../components/ProjectCard.astro";
-import { APPROACH, CATEGORY, GAME_LABEL, STATUS } from "../../lib/labels";
+import { APPROACH, CATEGORY, GAME_LABEL, STATUS, SUGGEST_URL } from "../../lib/labels";
 
 const order = Object.keys(CATEGORY);
 const projects = (await getCollection("projects")).sort(
@@ -23,6 +23,7 @@ const filters = [
       Interfaces, libraries, bots, simulators and community tools. Status comes from each repository's last commit:
       active within six months, maintained within eighteen, dormant after that.
     </p>
+    <p><a class="btn ghost" href={SUGGEST_URL}>Suggest a project</a></p>
   </div>
 
   <div class="wrap">

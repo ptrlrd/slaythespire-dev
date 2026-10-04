@@ -1,0 +1,175 @@
+---
+import Base from "../layouts/Base.astro";
+import { url } from "../lib/labels";
+const p = (id: string) => url(`projects/${id}/`);
+
+const sts1 = [
+  ["ModTheSpire wiki", "https://github.com/kiooeht/ModTheSpire/wiki", "Loader setup and SpirePatch, the system every mod uses to change game code."],
+  ["BaseMod wiki", "https://github.com/daviscook477/BaseMod/wiki", "Hooks and helpers for adding cards, relics, characters and events."],
+  ["BasicMod", "https://github.com/Alchyr/BasicMod/wiki", "Empty starter mod with a step-by-step tutorial wiki. The recommended starting point."],
+  ["ProTemplate", "https://github.com/DarkVexon/ProTemplate", "Character mod template with extra quality-of-life features, for people who know the basics."],
+  ["StSLib", "https://github.com/kiooeht/StSLib", "Shared keywords and mechanics many content mods depend on."],
+  ["Steam Workshop", "https://steamcommunity.com/app/646570/workshop/", "Where Slay the Spire mods are published and installed."],
+];
+
+const sts2 = [
+  ["STS2 modding tutorials", "https://tutorials.sts2modding.com", "Setup, BaseLib and RitsuLib, adding content and visuals. Work in progress."],
+  ["ModTemplate-StS2", "https://github.com/Alchyr/ModTemplate-StS2/wiki/Setup", "Templates for an empty mod, a content mod and a character mod."],
+  ["BaseLib", "https://github.com/Alchyr/BaseLib-StS2", "Library that standardizes how mods add content."],
+  ["RitsuLib", "https://github.com/BAKAOLC/STS2-RitsuLib", "Shared framework library for mods."],
+  ["ILSpy", "https://github.com/icsharpcode/ILSpy", "C# decompiler for reading the game's code."],
+  ["Spire Codex", "https://spire-codex.com", "Card, relic, monster and event data for every game version, with an API."],
+  ["sts2-mod-uploader", "https://github.com/megacrit/sts2-mod-uploader", "Mega Crit's official tool for publishing to the Steam Workshop."],
+  ["Steam Workshop", "https://steamcommunity.com/app/2868840/workshop/", "Where Slay the Spire 2 mods are published and installed."],
+];
+---
+<Base title="Modding" description="How to start modding Slay the Spire and Slay the Spire 2, with the loaders, templates, tutorials and tools for each.">
+  <div class="wrap page-head">
+    <h1>Getting into modding</h1>
+    <p>
+      Bots, overlays, trackers and new content all start as mods. The two games use different engines, so pick the
+      game first; each column below runs from first step to first published mod.
+    </p>
+  </div>
+
+  <div class="wrap games">
+    <section class="card game sts1">
+      <div class="card-body">
+        <span class="tag sts1">Slay the Spire</span>
+        <h2>Java, ModTheSpire and BaseMod</h2>
+        <p class="lead">
+          The game is written in Java. <a href={p("modthespire")}>ModTheSpire</a> loads mods and patches game methods
+          at load time, and <a href={p("basemod")}>BaseMod</a> adds the API most content mods use.
+        </p>
+        <ol>
+          <li>Subscribe to ModTheSpire, BaseMod and StSLib on the Steam Workshop.</li>
+          <li>Learn enough Java to read and write classes. The BasicMod tutorial says it won't teach Java.</li>
+          <li>Set up <a href="https://github.com/Alchyr/BasicMod/wiki">BasicMod</a> and follow its wiki. Older guides point at the Default Mod, which its own README marks as out of date.</li>
+          <li>Read the game's decompiled code to find what to patch. ModTheSpire's SpirePatch lets you insert code before, after or inside game methods.</li>
+          <li>Ask in <code>#modding-technical</code> on the Slay the Spire Discord; the BasicMod README points there for more options.</li>
+          <li>Publish to the Steam Workshop.</li>
+        </ol>
+        <h3>Resources</h3>
+        <ul class="res">
+          {sts1.map(([name, href, text]) => <li><a href={href}>{name}</a><span>{text}</span></li>)}
+        </ul>
+      </div>
+    </section>
+
+    <section class="card game sts2">
+      <div class="card-body">
+        <span class="tag sts2">Slay the Spire 2</span>
+        <h2>C#, Godot and official mod support</h2>
+        <p class="lead">
+          The sequel runs on Godot with its game logic in C#. It supports mods officially, and Mega Crit publishes an
+          uploader for the Steam Workshop. The game is in Early Access, so code and mod APIs still change between patches.
+        </p>
+        <ol>
+          <li>Install the .NET SDK and an editor that handles C# solutions.</li>
+          <li>Work through the <a href="https://tutorials.sts2modding.com">STS2 modding tutorials</a> for setup and the basics.</li>
+          <li>Create a project from <a href="https://github.com/Alchyr/ModTemplate-StS2/wiki/Setup">ModTemplate-StS2</a>. Its setup notes require "Put solution and project in same directory" for Godot.</li>
+          <li>Decompile the game's assembly with ILSpy to see how cards, relics and powers are built.</li>
+          <li>Look up IDs and values in <a href={p("spire-codex")}>Spire Codex</a> instead of digging through files.</li>
+          <li>Publish with Mega Crit's <a href={p("sts2-mod-uploader")}>sts2-mod-uploader</a>.</li>
+        </ol>
+        <h3>Resources</h3>
+        <ul class="res">
+          {sts2.map(([name, href, text]) => <li><a href={href}>{name}</a><span>{text}</span></li>)}
+        </ul>
+      </div>
+    </section>
+  </div>
+
+  <div class="wrap next">
+    <h2>Building a bot or tool rather than content?</h2>
+    <p>
+      You may not need to write a mod at all. Bridges like <a href={p("communicationmod")}>Communication Mod</a> and
+      <a href={p("sts2mcp")}>STS2MCP</a> already expose the game to outside programs. Start with
+      <a href={url("guide/")}>What it takes</a>, or browse every <a href={url("projects/?category=modding")}>modding foundation</a>
+      in the index.
+    </p>
+  </div>
+</Base>
+
+<style>
+  .games {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+    padding: 24px 0 40px;
+    align-items: start;
+  }
+  .game {
+    border-top: 6px solid var(--accent);
+  }
+  .sts1 {
+    --accent: var(--sts1);
+  }
+  .sts2 {
+    --accent: var(--sts2);
+  }
+  .game .card-body {
+    padding: 26px 30px 30px;
+  }
+  .game .tag {
+    align-self: flex-start;
+  }
+  h2 {
+    font-size: 1.45rem;
+    margin: 6px 0 0;
+  }
+  h3 {
+    color: var(--accent);
+    font-size: 1rem;
+    text-transform: uppercase;
+    margin: 12px 0 0;
+  }
+  .lead {
+    margin: 0;
+    color: #dce6ec;
+  }
+  ol {
+    margin: 0;
+    padding-left: 1.3em;
+  }
+  ol li {
+    margin-bottom: 0.55em;
+  }
+  ol li::marker {
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .res {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 10px;
+  }
+  .res li {
+    display: grid;
+    gap: 2px;
+    padding: 10px 14px;
+    background: var(--navy-card);
+    border-radius: 8px;
+  }
+  .res a {
+    font-weight: 700;
+  }
+  .res span {
+    color: var(--mist);
+    font-size: 0.9rem;
+  }
+  .next {
+    padding: 0 0 80px;
+    max-width: 820px;
+  }
+  .next h2 {
+    font-size: 1.4rem;
+  }
+  @media (max-width: 900px) {
+    .games {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
