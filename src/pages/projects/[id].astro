@@ -14,6 +14,31 @@ const { Content } = await render(project);
 const related = (await getCollection("projects")).filter(
   (o) => o.id !== project.id && (o.data.category === p.category || o.data.approaches.some((a) => p.approaches.includes(a) && a !== "tooling")),
 ).slice(0, 6);
+const site = Astro.site!;
+const pageUrl = new URL(Astro.url.pathname, site).href;
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareSourceCode",
+    name: p.name,
+    description: p.summary,
+    url: p.url,
+    ...(p.repo ? { codeRepository: `https://github.com/${p.repo}` } : {}),
+    ...(p.language ? { programmingLanguage: p.language } : {}),
+    ...(p.license ? { license: p.license } : {}),
+    author: { "@type": "Person", name: p.author },
+    about: p.games.map((g) => ({ "@type": "VideoGame", name: GAME_LABEL[g] })),
+    mainEntityOfPage: pageUrl,
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Projects", item: new URL(url("projects/"), site).href },
+      { "@type": "ListItem", position: 2, name: p.name, item: pageUrl },
+    ],
+  },
+];
 const facts = [
   ["Category", CATEGORY[p.category].label],
   ["Games", p.games.map((g) => GAME_LABEL[g]).join(", ")],
@@ -24,7 +49,7 @@ const facts = [
   ["Status", STATUS[p.status]],
 ];
 ---
-<Base title={p.name} description={p.summary}>
+<Base title={`${p.name}: ${p.games.length > 1 ? "Slay the Spire 1 & 2" : GAME_LABEL[p.games[0]]} ${CATEGORY[p.category].label.toLowerCase()}`} description={p.summary} jsonLd={jsonLd}>
   <div class="wrap page-head">
     <p class="crumb"><a href={url("projects/")}>Projects</a> / {CATEGORY[p.category].label}</p>
     <div class="tags">{p.games.map((g) => <span class={`tag ${g}`}>{GAME_LABEL[g]}</span>)}</div>

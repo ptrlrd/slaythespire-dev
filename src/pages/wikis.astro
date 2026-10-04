@@ -1,0 +1,100 @@
+---
+import Base from "../layouts/Base.astro";
+import { GAME_LABEL } from "../lib/labels";
+
+type Game = keyof typeof GAME_LABEL;
+const wikis: { name: string; url: string; games: Game[]; text: string; extra?: [string, string] }[] = [
+  {
+    name: "Slay the Spire Wiki",
+    url: "https://slaythespire.wiki.gg/",
+    games: ["sts1", "sts2"],
+    text: "The largest community wiki, covering both games with over 2,200 articles: characters, cards, relics, potions, events and patch notes.",
+    extra: ["Slay the Spire 2 section", "https://slaythespire.wiki.gg/wiki/Slay_the_Spire_2:Main"],
+  },
+  {
+    name: "Spire Codex",
+    url: "https://spire-codex.com",
+    games: ["sts2"],
+    text: "Database, wiki and guides built directly from the game files for every version, in 15 languages, with a public API, run statistics and patch diffs.",
+    extra: ["API documentation", "https://spire-codex.com/developers"],
+  },
+  {
+    name: "sts.gg",
+    url: "https://sts.gg/",
+    games: ["sts1", "sts2"],
+    text: "Card and relic database for both games, with upgrade details and a seed outcome predictor.",
+  },
+  {
+    name: "STS2.GG",
+    url: "https://sts2.gg/",
+    games: ["sts2"],
+    text: "Wiki with cards, relics, monsters and builds, plus a Neow boon tier list, damage calculator and run-planning tools.",
+  },
+  {
+    name: "Slay the Spire 2 Wiki (slaythespire2.gg)",
+    url: "https://slaythespire2.gg/",
+    games: ["sts2"],
+    text: "Database of cards, characters, relics and potions with patch news.",
+  },
+  {
+    name: "Mobalytics",
+    url: "https://mobalytics.gg/slay-the-spire-2/wiki",
+    games: ["sts2"],
+    text: "Compendium of cards, relics and potions alongside guides and builds.",
+  },
+  {
+    name: "Slay the Spire 攻略 Wiki",
+    url: "https://wikiwiki.jp/slaythespire/",
+    games: ["sts1"],
+    text: "Japanese-language strategy wiki for Slay the Spire.",
+  },
+  {
+    name: "Slay the Spire 2 攻略 Wiki",
+    url: "https://wikiwiki.jp/sts2/",
+    games: ["sts2"],
+    text: "Japanese-language strategy wiki for Slay the Spire 2.",
+  },
+];
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  name: "Slay the Spire wikis and databases",
+  itemListElement: wikis.map((w, i) => ({ "@type": "ListItem", position: i + 1, name: w.name, url: w.url })),
+};
+---
+<Base title="Slay the Spire wikis and databases" description="Wikis and databases for Slay the Spire and Slay the Spire 2: card, relic, monster and event references, strategy wikis and data APIs." jsonLd={jsonLd}>
+  <div class="wrap page-head">
+    <h1>Wikis</h1>
+    <p>
+      Reference sites for cards, relics, monsters and mechanics. Useful for checking how something works, and some
+      double as a data source for tools.
+    </p>
+  </div>
+  <div class="wrap grid list">
+    {wikis.map((w) => (
+      <article class="card">
+        <div class="card-body">
+          <div class="tags">{w.games.map((g) => <span class={`tag ${g}`}>{GAME_LABEL[g]}</span>)}</div>
+          <h3><a href={w.url}>{w.name}</a></h3>
+          <p class="text">{w.text}</p>
+          {w.extra && <a class="extra" href={w.extra[1]}>{w.extra[0]} →</a>}
+        </div>
+      </article>
+    ))}
+  </div>
+</Base>
+
+<style>
+  .list {
+    padding: 24px 0 80px;
+  }
+  .text {
+    margin: 0;
+    color: #dce6ec;
+    flex: 1;
+  }
+  .extra {
+    font-weight: 700;
+    font-size: 0.9rem;
+  }
+</style>

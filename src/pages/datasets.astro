@@ -7,8 +7,20 @@ const ACCESS = { open: "Open", "on-request": "No stable link", defunct: "Offline
 const sets = (await getCollection("datasets")).sort(
   (a, b) => Object.keys(ACCESS).indexOf(a.data.access) - Object.keys(ACCESS).indexOf(b.data.access) || a.data.name.localeCompare(b.data.name),
 );
+const jsonLd = sets
+  .filter((d) => d.data.access !== "defunct")
+  .map((d) => ({
+    "@context": "https://schema.org",
+    "@type": "Dataset",
+    name: d.data.name,
+    description: d.data.summary,
+    url: d.data.url,
+    isAccessibleForFree: d.data.access === "open",
+    encodingFormat: d.data.format,
+    keywords: d.data.games.map((g) => GAME_LABEL[g]),
+  }));
 ---
-<Base title="Datasets" description="Run histories, agent trajectories and game data for training and evaluating Slay the Spire bots.">
+<Base title="Slay the Spire datasets: run histories and game data" jsonLd={jsonLd} description="Run histories, agent trajectories and game data for training and evaluating Slay the Spire bots.">
   <div class="wrap page-head">
     <h1>Datasets</h1>
     <p>Run histories to learn from or compare against, agent trajectories, and structured game data.</p>

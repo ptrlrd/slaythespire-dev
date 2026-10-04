@@ -19,6 +19,7 @@ const year = new Date().getFullYear();
         <a href={url("papers/")}>Papers</a>
         <a href={url("datasets/")}>Datasets</a>
         <a href={url("modding/")}>Modding</a>
+        <a href={url("wikis/")}>Wikis</a>
       </div>
       <div>
         <p class="h">Help out</p>
@@ -33,6 +34,7 @@ const year = new Date().getFullYear();
       key art are © Mega Crit, LLC. Project descriptions summarize each project's own documentation; follow the links for the
       authoritative version. © {year}
     </p>
+    <p class="wrap credit">Brought to you by <a href="https://spire-codex.com">Spire Codex</a>, the Slay the Spire 2 database and API.</p>
   </div>
 </footer>
 
@@ -77,6 +79,15 @@ const year = new Date().getFullYear();
     padding-top: 20px;
     border-top: 1px solid var(--navy-card);
     font-size: 0.8rem;
+  }
+  .credit {
+    margin-top: 10px;
+    font-size: 0.85rem;
+    color: var(--cream);
+  }
+  .credit a {
+    color: var(--gold);
+    font-weight: 700;
   }
   @media (max-width: 700px) {
     .cols {
