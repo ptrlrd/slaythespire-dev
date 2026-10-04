@@ -1,0 +1,241 @@
+---
+import Base from "../layouts/Base.astro";
+import { url } from "../lib/labels";
+const p = (id: string) => url(`projects/${id}/`);
+---
+<Base title="What it takes" description="The layers of a Slay the Spire bot or tool, what has been tried at each one, and where the hard problems are.">
+  <div class="wrap page-head">
+    <h1>What it takes</h1>
+    <p>
+      Every bot, advisor or analysis tool for Slay the Spire is built from the same layers. This page walks through
+      them in order, with the projects that have tried each one and the numbers they report.
+    </p>
+  </div>
+
+  <div class="wrap layout">
+    <nav class="toc card" aria-label="On this page">
+      <div class="card-body">
+        <a href="#read">1. Read the game</a>
+        <a href="#state">2. Represent the state</a>
+        <a href="#decide">3. Decide</a>
+        <a href="#simulate">4. Test faster than real time</a>
+        <a href="#measure">5. Measure honestly</a>
+        <a href="#results">Where results stand</a>
+        <a href="#hard">The hard problems</a>
+        <a href="#start">Where to start</a>
+      </div>
+    </nav>
+
+    <article class="prose">
+      <h2 id="read">1. Read the game</h2>
+      <p>
+        A program has to see what a player sees and act the way a player acts. Neither game ships an API, so this
+        layer is always a mod.
+      </p>
+      <h3>Slay the Spire</h3>
+      <p>
+        <a href={p("modthespire")}>ModTheSpire</a> loads mods and <a href={p("basemod")}>BaseMod</a> provides the
+        modding API. On top of them, <a href={p("communicationmod")}>Communication Mod</a> is the standard bridge: it
+        starts your program, sends it the game state as JSON whenever a decision is due, and reads commands like
+        <code>play</code>, <code>choose</code> and <code>end</code> back. <a href={p("spirecomm")}>spirecomm</a> wraps
+        that protocol in Python objects. Nearly every STS1 bot in this index runs on these four pieces.
+      </p>
+      <p>
+        Playing the real game is slow, so there are mods for that too: <a href={p("superfastmode")}>SuperFastMode</a>
+        skips animations, and <a href={p("ludicrousspeed")}>LudicrousSpeed</a> with
+        <a href={p("stsstatesaver")}>STSStateSaver</a> let a search try a line in the real game and rewind it.
+        <a href={p("mcpthespire")}>MCPTheSpire</a> exposes the same state to language-model agents over MCP.
+      </p>
+      <h3>Slay the Spire 2</h3>
+      <p>
+        The sequel runs on Godot with its game logic in C#, and it ships a native mod loader plus an
+        <a href={p("sts2-mod-uploader")}>official Workshop uploader</a>. There is no single standard bridge yet.
+        <a href={p("sts2mcp")}>STS2MCP</a> (REST plus MCP) is the most used, <a href={p("sts2-agent")}>STS2-Agent</a>
+        offers HTTP and MCP with an in-game model runner, and several bots carry their own forks. Because the game is
+        in Early Access, each bridge is tested against specific game versions and can break on patch day.
+      </p>
+
+      <h2 id="state">2. Represent the state</h2>
+      <p>
+        The bridge hands over a snapshot: hand, draw and discard pile contents, energy, HP, block, powers, enemy
+        intents, relics, potions, the map and the current screen. A rules-based bot can read that directly. Anything
+        that learns has to turn it into numbers. <a href={p("learnthespire")}>LearnTheSpire</a> encoded a deck as a
+        1×234 card vector; <a href={p("sts2-rl-agent")}>sts2-rl-agent</a> uses a 131-dimensional combat observation.
+      </p>
+      <p>
+        What the snapshot leaves out matters as much as what it includes. A player doesn't know the draw order,
+        future card rewards or event outcomes, but a simulator seeded with the run's RNG does. A bot that uses that
+        knowledge is playing a different, easier game. Projects should say which one they play, and the better ones do.
+      </p>
+
+      <h2 id="decide">3. Decide</h2>
+      <p>A full run is a chain of different decisions, and projects often use a different technique for each.</p>
+      <table>
+        <thead><tr><th>Decision</th><th>What's been tried</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>Combat</td>
+            <td>
+              Search dominates: <a href={p("bottled-ai")}>Bottled AI</a> simulates hand orderings and scores outcomes,
+              <a href={p("sts-lightspeed")}>sts_lightspeed</a> and <a href={p("combat-solver")}>CombatSolver</a>
+              search inside simulators. Learning combat end to end has mostly failed, and
+              <a href={p("sts-rl-agent-jialeiv")}>sts-rl-agent</a> documents its own failed attempts.
+            </td>
+          </tr>
+          <tr>
+            <td>Card rewards, shops, upgrades</td>
+            <td>
+              Priority lists (<a href={p("bottled-ai")}>Bottled AI</a>), learned policies
+              (<a href={p("sts-rl-agent-jialeiv")}>sts-rl-agent</a>, <a href={p("sts-ironclad-agent")}>sts-ironclad-agent</a>)
+              and models of human picks (<a href={p("learnthespire")}>LearnTheSpire</a>).
+            </td>
+          </tr>
+          <tr>
+            <td>Map path</td>
+            <td>
+              Dynamic programming over the map (<a href={p("sts2-fable-bot")}>STS2FableBot</a>), learned policies, and
+              studies of how winners path (<a href={url("papers/")}>map entropy paper, pathing thesis</a>).
+            </td>
+          </tr>
+          <tr>
+            <td>Events, campfires, Neow</td>
+            <td>Hand-written conditions in most bots; learned policies in the hybrid agents above.</td>
+          </tr>
+          <tr>
+            <td>Everything, by language model</td>
+            <td>
+              Prompting a model with the state and a list of legal actions
+              (<a href={p("agentic-sts")}>AgenticSTS</a>, <a href={p("sts2-agent")}>STS2-Agent</a>,
+              <a href={p("slay-the-spire-agent-minhao")}>slay_the_spire_agent</a>). Given typed options to choose from, small
+              models reach floor 14 at A0, and fine-tuning on a search bot's choices takes them to 19
+              (<a href={p("typed-decision")}>typed-decision</a>).
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <p>
+        The strongest results so far pair a learned or hand-tuned out-of-combat policy with classical search in combat.
+        See the <a href={url("approaches/")}>approaches page</a> for every project grouped by technique.
+      </p>
+
+      <h2 id="simulate">4. Test faster than real time</h2>
+      <p>
+        Search needs to try lines, and learning needs millions of games. Both need a simulator, and every simulator
+        trades speed against fidelity.
+      </p>
+      <ul>
+        <li>
+          <a href={p("sts-lightspeed")}>sts_lightspeed</a> (STS1, C++) is the reference: built to be RNG-accurate,
+          1M random playouts in 5 seconds on 16 threads per its README, but card coverage centers on Ironclad and colorless.
+        </li>
+        <li>
+          <a href={p("decapitate-the-spire")}>decapitate-the-spire</a> (Python) and
+          <a href={p("conquer-the-spire")}>conquer-the-spire</a> (C++) are partial reimplementations aimed at
+          reinforcement learning.
+        </li>
+        <li>
+          <a href={p("sts2-cli")}>sts2-cli</a> sidesteps fidelity entirely for STS2 by running the real game engine
+          headless, which needs a copy of the game and pins you to its version.
+        </li>
+        <li>
+          <a href={p("sts2-sim")}>sts2-sim</a> ports STS2 line by line with matching RNG and cloneable states for
+          search; <a href={p("sts2-rl-agent")}>sts2-rl-agent</a> trades fidelity for speed at about 1,200 combats a
+          second in Python.
+        </li>
+      </ul>
+      <p>
+        Whatever the simulator, check it against the real game. <a href={p("sts-ironclad-agent")}>sts-ironclad-agent</a>
+        ships a parity checker, and <a href={p("better-run-logs")}>better-run-logs</a> records the RNG state of every
+        action, which makes a good test set.
+      </p>
+
+      <h2 id="measure">5. Measure honestly</h2>
+      <ul>
+        <li>State the character, ascension level and game version. A win rate means nothing without them.</li>
+        <li>Use a fixed set of seeds the bot never trained on, and report how many runs. Fifty runs leaves a 20% win rate anywhere between about 9% and 31%.</li>
+        <li>Say whether the bot can see anything a player can't, such as RNG state or upcoming draws.</li>
+        <li>
+          Compare with people. In the 2020 slice of Mega Crit's run dump, 9% of 18 million runs were wins
+          (<a href={url("papers/")}>Fox Row's analysis</a>).
+        </li>
+      </ul>
+
+      <h2 id="results">Where results stand</h2>
+      <p>Self-reported by each project, without independent verification. Settings differ, so compare with care.</p>
+      <table>
+        <thead><tr><th>Project</th><th>Setting</th><th>Reported result</th><th>Approach</th></tr></thead>
+        <tbody>
+          <tr><td><a href={p("sts-ironclad-agent")}>sts-ironclad-agent</a></td><td>STS1, Ironclad, A20, real game</td><td>50.1% Heart wins over 501 runs</td><td>Learned policy + combat search</td></tr>
+          <tr><td><a href={p("bottled-ai")}>Bottled AI</a></td><td>STS1, all four, ascension not stated</td><td>20–52% wins, ~50 runs each</td><td>Rules + combat search</td></tr>
+          <tr><td><a href={p("sts-rl-agent-jialeiv")}>sts-rl-agent</a></td><td>STS1, Ironclad, A0, simulator</td><td>14% wins, floor 42.5, 50 seeds</td><td>Learned policy + MCTS</td></tr>
+          <tr><td><a href={p("sts2-fable-bot")}>STS2FableBot</a></td><td>STS2, A0 and A1</td><td>20.7% (343 runs) and 19.4% (175 runs)</td><td>Search + scoring</td></tr>
+          <tr><td><a href={p("agentic-sts")}>AgenticSTS</a></td><td>STS2, A0</td><td>6 of 10 runs</td><td>Language model + memory</td></tr>
+          <tr><td><a href={p("typed-decision")}>typed-decision</a></td><td>STS1, Ironclad, A0, 200 seeds</td><td>Floor 19.5 after fine-tuning</td><td>Small language model</td></tr>
+        </tbody>
+      </table>
+
+      <h2 id="hard">The hard problems</h2>
+      <ul>
+        <li><strong>Hidden information.</strong> Draw order, rewards and events are random. Search with the real RNG is easier than the game; search without it needs sampling.</li>
+        <li><strong>Long horizon.</strong> A run is 50-plus floors with one win or loss at the end. Card choices in Act 1 decide fights in Act 3.</li>
+        <li><strong>Combat branching.</strong> Hands with many cards and targets grow the search tree quickly, which is why speed matters.</li>
+        <li><strong>Simulator fidelity.</strong> Every reimplementation drifts somewhere, and a policy trained on the drift learns the wrong game.</li>
+        <li><strong>Moving target.</strong> Slay the Spire 2 is in Early Access. Content and balance change between patches, and bridges and simulators pin versions.</li>
+      </ul>
+
+      <h2 id="start">Where to start</h2>
+      <table>
+        <thead><tr><th>If you want to…</th><th>Start with</th></tr></thead>
+        <tbody>
+          <tr><td>Get a bot playing STS1 this weekend</td><td><a href={p("communicationmod")}>Communication Mod</a> + <a href={p("spirecomm")}>spirecomm</a>, then read <a href={p("bottled-ai")}>Bottled AI</a></td></tr>
+          <tr><td>Do the same for STS2</td><td><a href={p("sts2mcp")}>STS2MCP</a> or <a href={p("sts2-cli")}>sts2-cli</a></td></tr>
+          <tr><td>Try search</td><td><a href={p("sts-lightspeed")}>sts_lightspeed</a> (STS1) or <a href={p("sts2-sim")}>sts2-sim</a> (STS2)</td></tr>
+          <tr><td>Try reinforcement learning</td><td><a href={p("sts-rl-agent-jialeiv")}>sts-rl-agent</a> and <a href={p("sts2-rl-agent")}>sts2-rl-agent</a></td></tr>
+          <tr><td>Point a language model at the game</td><td><a href={p("mcpthespire")}>MCPTheSpire</a> (STS1) or <a href={p("sts2mcp")}>STS2MCP</a> (STS2), then <a href={p("agentic-sts")}>AgenticSTS</a></td></tr>
+          <tr><td>Analyze how people play</td><td><a href={url("datasets/")}>Datasets</a></td></tr>
+          <tr><td>Build a seed or run tool</td><td><a href={p("seedsearch")}>SeedSearch</a>, <a href={p("sts-map-oracle")}>sts_map_oracle</a>, <a href={p("spire-codex")}>Spire Codex</a></td></tr>
+        </tbody>
+      </table>
+    </article>
+  </div>
+</Base>
+
+<style>
+  .layout {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 48px;
+    align-items: start;
+    padding: 16px 0 80px;
+  }
+  .toc {
+    position: sticky;
+    top: 96px;
+  }
+  .toc .card-body {
+    gap: 8px;
+    padding: 18px 20px;
+  }
+  .toc a {
+    color: var(--cream);
+    text-decoration: none;
+    font-size: 0.9rem;
+  }
+  .toc a:hover {
+    color: var(--gold);
+  }
+  .prose {
+    max-width: 820px;
+  }
+  .prose h2:first-child {
+    margin-top: 0;
+  }
+  @media (max-width: 900px) {
+    .layout {
+      grid-template-columns: 1fr;
+    }
+    .toc {
+      position: static;
+    }
+  }
+</style>

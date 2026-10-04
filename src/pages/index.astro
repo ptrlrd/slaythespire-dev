@@ -1,0 +1,245 @@
+---
+import { getCollection } from "astro:content";
+import Base from "../layouts/Base.astro";
+import Hero from "../components/Hero.astro";
+import TornEdge from "../components/TornEdge.astro";
+import ProjectCard from "../components/ProjectCard.astro";
+import { CATEGORY, url } from "../lib/labels";
+
+const projects = await getCollection("projects");
+const papers = await getCollection("papers");
+const datasets = await getCollection("datasets");
+const featured = projects.filter((p) => p.data.featured).sort((a, b) => a.data.name.localeCompare(b.data.name));
+const counts = Object.fromEntries(
+  Object.keys(CATEGORY).map((k) => [k, projects.filter((p) => p.data.category === k).length]),
+);
+counts.research = papers.length;
+counts.dataset += datasets.length;
+
+const start = [
+  {
+    title: "What it takes",
+    text: "The parts every bot needs, from reading game state to choosing a path, and where each part gets hard.",
+    href: "guide/",
+    accent: "var(--gold)",
+  },
+  {
+    title: "Approaches",
+    text: "Rules, search, reinforcement learning, learning from run data and language models, with the projects that tried each.",
+    href: "approaches/",
+    accent: "var(--sts1)",
+  },
+  {
+    title: "Simulators",
+    text: "Headless reimplementations that let a bot try thousands of lines before the real game draws a card.",
+    href: "projects/?category=simulator",
+    accent: "var(--sts2)",
+  },
+  {
+    title: "Run data",
+    text: "Public run histories for training, evaluating and checking an idea against how people actually play.",
+    href: "datasets/",
+    accent: "var(--mist)",
+  },
+];
+---
+<Base>
+  <section class="hero">
+    <Hero />
+    <div class="wrap hero-inner">
+      <div class="panel">
+        <h1>Every idea for building Slay the Spire tooling, in one place.</h1>
+        <p>
+          Mods, game bridges, simulators, bots, seed tools, run data and research for Slay the Spire and
+          Slay the Spire 2, with notes on what each approach takes.
+        </p>
+        <div class="actions">
+          <a class="btn" href={url("projects/")}>Browse projects</a>
+          <a class="btn ghost" href={url("guide/")}>What it takes</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <TornEdge color="var(--cream)" seed={11} />
+  <section class="band">
+    <div class="wrap section slim">
+      <p class="lede">
+        Most Spire tooling needs the same three pieces: a way to read the game, something that decides or analyzes,
+        and a way to test faster than real time. This index collects what people have built for each.
+      </p>
+    </div>
+  </section>
+  <TornEdge color="var(--cream)" flip seed={23} />
+
+  <section class="section">
+    <div class="wrap">
+      <h2 class="section-title">Start Here</h2>
+      <div class="grid start">
+        {start.map((s) => (
+          <a class="card start-card" href={url(s.href)} style={`--accent:${s.accent}`}>
+            <div class="card-body">
+              <h3>{s.title}</h3>
+              <p>{s.text}</p>
+              <span class="more">Read →</span>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section tight">
+    <div class="wrap">
+      <h2 class="section-title">Featured Projects</h2>
+      <div class="grid">
+        {featured.map((p) => <ProjectCard project={p} />)}
+      </div>
+      <p class="center"><a class="btn ghost" href={url("projects/")}>See all {projects.length} projects</a></p>
+    </div>
+  </section>
+
+  <section class="section tight">
+    <div class="wrap">
+      <h2 class="section-title">By Category</h2>
+      <div class="cats">
+        {Object.entries(CATEGORY).map(([key, c]) => (
+          <a
+            class="cat"
+            href={url(key === "research" ? "papers/" : key === "dataset" ? "datasets/" : `projects/?category=${key}`)}
+          >
+            <span class="n">{counts[key]}</span>
+            <span class="l">{c.label}</span>
+            <span class="b">{c.blurb}</span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .hero {
+    position: relative;
+    min-height: min(78vh, 720px);
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+  }
+  .hero-inner {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    justify-content: flex-end;
+    padding: 64px 0;
+  }
+  .panel {
+    background: rgba(17, 22, 40, 0.82);
+    border-radius: 14px;
+    padding: 34px 38px;
+    max-width: 560px;
+    box-shadow: var(--shadow);
+  }
+  .panel h1 {
+    font-size: clamp(1.7rem, 3.4vw, 2.5rem);
+    color: var(--cream);
+  }
+  .panel p {
+    font-size: 1.08rem;
+    color: #e6ecef;
+  }
+  .actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 18px;
+  }
+  .slim {
+    padding: 48px 0;
+  }
+  .tight {
+    padding-top: 24px;
+  }
+  .start {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  @media (max-width: 1000px) {
+    .start {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (max-width: 560px) {
+    .start {
+      grid-template-columns: 1fr;
+    }
+  }
+  .start-card {
+    text-decoration: none;
+    color: var(--white);
+    border-top: 6px solid var(--accent);
+    transition: transform 0.15s;
+  }
+  .start-card:hover {
+    transform: translateY(-4px);
+    color: var(--white);
+  }
+  .start-card h3 {
+    color: var(--accent);
+  }
+  .start-card p {
+    margin: 0;
+    color: #dce6ec;
+    flex: 1;
+  }
+  .more {
+    font-weight: 700;
+    color: var(--accent);
+  }
+  .center {
+    text-align: center;
+    margin-top: 36px;
+  }
+  .cats {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 16px;
+  }
+  .cat {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    column-gap: 14px;
+    align-items: baseline;
+    padding: 18px 20px;
+    border-radius: var(--radius);
+    background: var(--navy-card);
+    text-decoration: none;
+    color: var(--white);
+  }
+  .cat:hover {
+    background: #26506a;
+    color: var(--white);
+  }
+  .n {
+    grid-row: span 2;
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--gold);
+    line-height: 1;
+  }
+  .l {
+    font-weight: 700;
+  }
+  .b {
+    color: var(--mist);
+    font-size: 0.85rem;
+  }
+  @media (max-width: 700px) {
+    .hero-inner {
+      justify-content: center;
+      padding: 160px 0 40px;
+    }
+    .panel {
+      padding: 26px 24px;
+    }
+  }
+</style>

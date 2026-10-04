@@ -1,0 +1,72 @@
+---
+import { getCollection } from "astro:content";
+import Base from "../layouts/Base.astro";
+import { GAME_LABEL } from "../lib/labels";
+
+const ACCESS = { open: "Open", "on-request": "No stable link", defunct: "Offline" } as const;
+const sets = (await getCollection("datasets")).sort(
+  (a, b) => Object.keys(ACCESS).indexOf(a.data.access) - Object.keys(ACCESS).indexOf(b.data.access) || a.data.name.localeCompare(b.data.name),
+);
+---
+<Base title="Datasets" description="Run histories, agent trajectories and game data for training and evaluating Slay the Spire bots.">
+  <div class="wrap page-head">
+    <h1>Datasets</h1>
+    <p>Run histories to learn from or compare against, agent trajectories, and structured game data.</p>
+  </div>
+  <div class="wrap table-wrap">
+    <table class="prose-table">
+      <thead><tr><th>Dataset</th><th>Game</th><th>Size</th><th>Format</th><th>Access</th></tr></thead>
+      <tbody>
+        {sets.map((d) => (
+          <tr>
+            <td>
+              <a href={d.data.url}><strong>{d.data.name}</strong></a>
+              <p class="meta">{d.data.summary}</p>
+            </td>
+            <td>{d.data.games.map((g) => <span class={`tag ${g}`}>{GAME_LABEL[g]}</span>)}</td>
+            <td>{d.data.size}</td>
+            <td>{d.data.format}</td>
+            <td><span class={`tag quiet access-${d.data.access}`}>{ACCESS[d.data.access]}</span></td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+</Base>
+
+<style>
+  .table-wrap {
+    overflow-x: auto;
+    padding: 24px 0 80px;
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    min-width: 760px;
+    background: var(--navy-deep);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  th,
+  td {
+    text-align: left;
+    padding: 16px 18px;
+    vertical-align: top;
+    border-bottom: 1px solid var(--navy-card);
+  }
+  th {
+    color: var(--gold);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+  }
+  td:first-child {
+    width: 42%;
+  }
+  td .meta {
+    margin: 6px 0 0;
+  }
+  .access-open {
+    color: var(--sts2);
+    box-shadow: inset 0 0 0 1px var(--sts2);
+  }
+</style>

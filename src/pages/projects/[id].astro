@@ -1,0 +1,93 @@
+---
+import { getCollection, render } from "astro:content";
+import Base from "../../layouts/Base.astro";
+import { APPROACH, CATEGORY, GAME_LABEL, STATUS, url } from "../../lib/labels";
+
+export async function getStaticPaths() {
+  const projects = await getCollection("projects");
+  return projects.map((project) => ({ params: { id: project.id }, props: { project } }));
+}
+
+const { project } = Astro.props;
+const p = project.data;
+const { Content } = await render(project);
+const related = (await getCollection("projects")).filter(
+  (o) => o.id !== project.id && (o.data.category === p.category || o.data.approaches.some((a) => p.approaches.includes(a) && a !== "tooling")),
+).slice(0, 6);
+const facts = [
+  ["Category", CATEGORY[p.category].label],
+  ["Games", p.games.map((g) => GAME_LABEL[g]).join(", ")],
+  ["Approach", p.approaches.map((a) => APPROACH[a].label).join(", ") || "—"],
+  ["Author", p.author],
+  ["Language", p.language ?? "—"],
+  ["License", p.license ?? "Not stated"],
+  ["Status", STATUS[p.status]],
+];
+---
+<Base title={p.name} description={p.summary}>
+  <div class="wrap page-head">
+    <p class="crumb"><a href={url("projects/")}>Projects</a> / {CATEGORY[p.category].label}</p>
+    <div class="tags">{p.games.map((g) => <span class={`tag ${g}`}>{GAME_LABEL[g]}</span>)}</div>
+    <h1>{p.name}</h1>
+    <p>{p.summary}</p>
+    <p><a class="btn" href={p.url}>{p.repo ? "View on GitHub" : "Visit project"}</a></p>
+  </div>
+  <div class="wrap layout">
+    <article class="prose"><Content /></article>
+    <aside class="card">
+      <dl class="card-body">
+        {facts.map(([k, v]) => (<><dt>{k}</dt><dd>{v}</dd></>))}
+      </dl>
+    </aside>
+  </div>
+  {related.length > 0 && (
+    <div class="wrap related">
+      <h2>Related</h2>
+      <ul>
+        {related.map((r) => <li><a href={url(`projects/${r.id}/`)}>{r.data.name}</a> <span class="meta">— {r.data.summary}</span></li>)}
+      </ul>
+    </div>
+  )}
+</Base>
+
+<style>
+  .crumb {
+    font-size: 0.9rem;
+  }
+  .page-head .tags {
+    margin-bottom: 10px;
+  }
+  .layout {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 40px;
+    align-items: start;
+    padding: 24px 0 32px;
+  }
+  dl {
+    margin: 0;
+  }
+  dt {
+    color: var(--mist);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+  dd {
+    margin: 0 0 10px;
+  }
+  .related {
+    padding-bottom: 72px;
+  }
+  .related ul {
+    padding-left: 1.1em;
+  }
+  .related li {
+    margin-bottom: 0.4em;
+  }
+  @media (max-width: 860px) {
+    .layout {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

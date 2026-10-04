@@ -1,0 +1,53 @@
+---
+import Base from "../layouts/Base.astro";
+---
+<Base title="Contribute" description="How to add a project, paper or dataset to the Slay the Spire Dev index.">
+  <div class="wrap page-head">
+    <h1>Add to the index</h1>
+    <p>Each entry is one Markdown file. Open a pull request with a new file, or open an issue if you'd rather someone else write it.</p>
+  </div>
+  <div class="wrap prose body">
+    <h2>Add a project</h2>
+    <p>Create <code>src/content/projects/your-project.md</code>:</p>
+    <pre><code>{`---
+name: Your Project
+url: https://github.com/you/your-project
+repo: you/your-project
+author: you
+games: [sts1]
+category: bot
+approaches: [search]
+language: Python
+license: MIT
+status: active
+summary: One or two plain sentences on what it does, under 240 characters.
+---
+
+Optional longer notes: how it works, what it depends on, and any results
+with the settings they were measured under.`}</code></pre>
+    <ul>
+      <li><code>games</code>: <code>sts1</code>, <code>sts2</code>, or both.</li>
+      <li><code>category</code>: <code>interface</code>, <code>modding</code>, <code>library</code>, <code>bot</code>, <code>simulator</code>, <code>dataset</code>, <code>tool</code> or <code>research</code>.</li>
+      <li><code>approaches</code>: any of <code>rules</code>, <code>search</code>, <code>rl</code>, <code>imitation</code>, <code>llm</code>, <code>tooling</code>.</li>
+      <li><code>status</code>: <code>active</code>, <code>maintained</code>, <code>dormant</code> or <code>archived</code>.</li>
+    </ul>
+    <h2>What makes a good entry</h2>
+    <ul>
+      <li>Describe what the project does in plain words, the way its own README would.</li>
+      <li>Only quote numbers the project publishes, with character, ascension, game version and run count.</li>
+      <li>Status follows the last commit: active within six months, maintained within eighteen, dormant after that.</li>
+      <li>Papers and datasets live in <code>src/content/papers/</code> and <code>src/content/datasets/</code> with similar fields.</li>
+    </ul>
+    <h2>Run it locally</h2>
+    <pre><code>npm install
+npm run dev</code></pre>
+    <p>The build checks every entry against the schema, so a missing or misspelled field fails before it reaches the site.</p>
+    <p><a class="btn" href="https://github.com/ptrlrd/slaythespire-dev">Open the repository</a></p>
+  </div>
+</Base>
+
+<style>
+  .body {
+    padding: 8px 0 80px;
+  }
+</style>

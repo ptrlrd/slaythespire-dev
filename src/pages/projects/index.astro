@@ -1,0 +1,179 @@
+---
+import { getCollection } from "astro:content";
+import Base from "../../layouts/Base.astro";
+import ProjectCard from "../../components/ProjectCard.astro";
+import { APPROACH, CATEGORY, GAME_LABEL, STATUS } from "../../lib/labels";
+
+const order = Object.keys(CATEGORY);
+const projects = (await getCollection("projects")).sort(
+  (a, b) => order.indexOf(a.data.category) - order.indexOf(b.data.category) || a.data.name.localeCompare(b.data.name),
+);
+const used = (key: "category" | "status") => new Set(projects.map((p) => p.data[key]));
+const filters = [
+  { key: "games", label: "Game", options: Object.entries(GAME_LABEL) },
+  { key: "category", label: "Category", options: Object.entries(CATEGORY).filter(([k]) => used("category").has(k as never)).map(([k, v]) => [k, v.label]) },
+  { key: "approaches", label: "Approach", options: Object.entries(APPROACH).map(([k, v]) => [k, v.label]) },
+  { key: "status", label: "Status", options: Object.entries(STATUS).filter(([k]) => used("status").has(k as never)) },
+];
+---
+<Base title="Projects" description="Every Slay the Spire bot, interface, simulator and tool in the index, filterable by game, category and approach.">
+  <div class="wrap page-head">
+    <h1>Projects</h1>
+    <p>
+      Interfaces, libraries, bots, simulators and community tools. Status comes from each repository's last commit:
+      active within six months, maintained within eighteen, dormant after that.
+    </p>
+  </div>
+
+  <div class="wrap">
+    <form class="filters" id="filters" onsubmit="return false">
+      <label class="search">
+        <span class="sr-only">Search</span>
+        <input type="search" name="q" placeholder="Search name, author, language…" autocomplete="off" />
+      </label>
+      {filters.map((f) => (
+        <fieldset>
+          <legend>{f.label}</legend>
+          {f.options.map(([value, label]) => (
+            <label class="chip">
+              <input type="checkbox" name={f.key} value={value} />
+              <span>{label}</span>
+            </label>
+          ))}
+        </fieldset>
+      ))}
+    </form>
+    <p class="count" id="count" aria-live="polite">{projects.length} projects</p>
+    <div class="grid" id="results">
+      {projects.map((p) => <ProjectCard project={p} />)}
+    </div>
+    <p class="empty" id="empty" hidden>Nothing matches those filters.</p>
+  </div>
+</Base>
+
+<script>
+  const form = document.getElementById("filters") as HTMLFormElement;
+  const cards = [...document.querySelectorAll<HTMLElement>("#results .project")];
+  const count = document.getElementById("count")!;
+  const empty = document.getElementById("empty")!;
+  const keys = ["games", "category", "approaches", "status"];
+
+  const params = new URLSearchParams(location.search);
+  for (const key of keys) {
+    for (const value of params.getAll(key)) {
+      const box = form.querySelector<HTMLInputElement>(`input[name="${key}"][value="${value}"]`);
+      if (box) box.checked = true;
+    }
+  }
+  const q = params.get("q");
+  if (q) (form.elements.namedItem("q") as HTMLInputElement).value = q;
+
+  function apply() {
+    const data = new FormData(form);
+    const text = String(data.get("q") ?? "").trim().toLowerCase();
+    const picked = Object.fromEntries(keys.map((k) => [k, data.getAll(k).map(String)]));
+    let shown = 0;
+    for (const card of cards) {
+      const ok =
+        (!text || card.dataset.search!.includes(text)) &&
+        keys.every((k) => {
+          if (!picked[k].length) return true;
+          const values = card.dataset[k]!.split(" ");
+          return picked[k].some((v) => values.includes(v));
+        });
+      card.hidden = !ok;
+      if (ok) shown++;
+    }
+    count.textContent = `${shown} of ${cards.length} projects`;
+    empty.hidden = shown > 0;
+    const next = new URLSearchParams();
+    for (const k of keys) for (const v of picked[k]) next.append(k, v);
+    if (text) next.set("q", text);
+    history.replaceState(null, "", next.size ? `?${next}` : location.pathname);
+  }
+
+  form.addEventListener("input", apply);
+  apply();
+</script>
+
+<style>
+  .filters {
+    display: grid;
+    gap: 14px;
+    background: var(--navy-deep);
+    padding: 20px 22px;
+    border-radius: var(--radius);
+    margin: 16px 0 12px;
+  }
+  .search input {
+    width: 100%;
+    font: inherit;
+    padding: 0.65em 1em;
+    border-radius: 999px;
+    border: 2px solid var(--slate);
+    background: var(--navy);
+    color: var(--white);
+  }
+  .search input:focus {
+    outline: none;
+    border-color: var(--gold);
+  }
+  fieldset {
+    border: 0;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+  }
+  legend {
+    float: left;
+    width: 90px;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.78rem;
+    color: var(--mist);
+  }
+  .chip input {
+    position: absolute;
+    opacity: 0;
+  }
+  .chip span {
+    display: inline-block;
+    padding: 0.3em 0.9em;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: inset 0 0 0 1px var(--slate);
+    color: var(--cream);
+  }
+  .chip input:checked + span {
+    background: var(--gold);
+    color: var(--navy);
+    box-shadow: none;
+  }
+  .chip input:focus-visible + span {
+    outline: 2px solid var(--gold);
+    outline-offset: 2px;
+  }
+  .count {
+    color: var(--mist);
+    margin: 0 0 16px;
+  }
+  .empty {
+    text-align: center;
+    color: var(--mist);
+    padding: 40px 0;
+  }
+  .grid {
+    padding-bottom: 72px;
+  }
+  @media (max-width: 600px) {
+    legend {
+      float: none;
+      width: 100%;
+    }
+  }
+</style>

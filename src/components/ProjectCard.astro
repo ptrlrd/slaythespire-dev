@@ -1,0 +1,63 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { APPROACH, CATEGORY, STATUS, url } from "../lib/labels";
+
+interface Props {
+  project: CollectionEntry<"projects">;
+}
+const { project } = Astro.props;
+const p = project.data;
+---
+<article
+  class="card project"
+  data-games={p.games.join(" ")}
+  data-category={p.category}
+  data-approaches={p.approaches.join(" ")}
+  data-status={p.status}
+  data-search={`${p.name} ${p.author} ${p.summary} ${p.language ?? ""}`.toLowerCase()}
+>
+  <div class={`stripe ${p.games.length > 1 ? "both" : p.games[0]}`}></div>
+  <div class="card-body">
+    <div class="tags">
+      {p.games.map((g) => <span class={`tag ${g}`}>{g === "sts1" ? "Slay the Spire" : "Slay the Spire 2"}</span>)}
+    </div>
+    <h3><a href={url(`projects/${project.id}/`)}>{p.name}</a></h3>
+    <p class="meta">{CATEGORY[p.category].label} · {p.author}{p.language ? ` · ${p.language}` : ""}</p>
+    <p class="summary">{p.summary}</p>
+    <div class="tags foot">
+      {p.approaches.filter((a) => a !== "tooling").map((a) => <span class="tag quiet">{APPROACH[a].short}</span>)}
+      <span class={`tag quiet status-${p.status}`}>{STATUS[p.status]}</span>
+    </div>
+  </div>
+</article>
+
+<style>
+  .stripe {
+    height: 8px;
+  }
+  .stripe.sts1 {
+    background: var(--sts1);
+  }
+  .stripe.sts2 {
+    background: var(--sts2);
+  }
+  .stripe.both {
+    background: linear-gradient(90deg, var(--sts1) 50%, var(--sts2) 50%);
+  }
+  .summary {
+    margin: 0;
+    color: #dce6ec;
+    flex: 1;
+  }
+  .foot {
+    margin-top: 4px;
+  }
+  .status-active,
+  .status-maintained {
+    color: var(--sts2);
+    box-shadow: inset 0 0 0 1px var(--sts2);
+  }
+  .status-archived {
+    color: #b9a7a7;
+  }
+</style>
