@@ -1,0 +1,72 @@
+name: Suggest a project
+description: Add a bot, tool, simulator, mod, dataset or paper to the index.
+title: "Add: "
+labels: [suggestion]
+body:
+  - type: input
+    id: name
+    attributes:
+      label: Name
+    validations:
+      required: true
+  - type: input
+    id: url
+    attributes:
+      label: Link
+      description: Repository, website or paper.
+      placeholder: https://github.com/owner/project
+    validations:
+      required: true
+  - type: checkboxes
+    id: games
+    attributes:
+      label: Game
+      options:
+        - label: Slay the Spire
+        - label: Slay the Spire 2
+  - type: dropdown
+    id: category
+    attributes:
+      label: Category
+      options:
+        - Game interface or bridge
+        - Modding foundation
+        - Client library
+        - Bot or agent
+        - Simulator
+        - Community tool
+        - Dataset
+        - Paper, thesis or write-up
+    validations:
+      required: true
+  - type: checkboxes
+    id: approaches
+    attributes:
+      label: Approach
+      options:
+        - label: Rules and heuristics
+        - label: Search and simulation
+        - label: Reinforcement learning
+        - label: Learning from runs
+        - label: Language models
+  - type: textarea
+    id: summary
+    attributes:
+      label: What it does
+      description: One or two plain sentences.
+    validations:
+      required: true
+  - type: textarea
+    id: results
+    attributes:
+      label: Reported results
+      description: Win rates or benchmarks the project publishes, with character, ascension, game version and run count. Leave blank if there are none.
+  - type: dropdown
+    id: relation
+    attributes:
+      label: Your relation to the project
+      options:
+        - I made it
+        - I contribute to it
+        - I use it
+        - I found it
