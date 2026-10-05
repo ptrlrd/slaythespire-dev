@@ -1,17 +1,20 @@
 :root {
-  --navy: #183749;
-  --navy-deep: #112836;
-  --navy-card: #1f4257;
-  --cream: #f2f0c4;
-  --cream-ink: #183749;
-  --slate: #6d95ac;
-  --mist: #8eadbe;
-  --gold: #f7db6b;
-  --sts1: #e8963f;
-  --sts2: #4fd8c4;
-  --white: #fff;
-  --radius: 10px;
-  --shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  --bg: #0a1118;
+  --bg-raised: #0f1920;
+  --card: #132028;
+  --card-hover: #1a2b35;
+  --border: #1e3040;
+  --border-strong: #2a4555;
+  --text: #e0ddd8;
+  --text-strong: #f4f2ee;
+  --text-soft: #c4c8cb;
+  --muted: #8a9298;
+  --gold: #e8b830;
+  --gold-light: #fbd91e;
+  --sts1: #d53b27;
+  --sts2: #45cfd8;
+  --radius: 8px;
+  --shadow: none;
   --max: 1180px;
   color-scheme: dark;
 }
@@ -28,9 +31,9 @@ html {
 
 body {
   margin: 0;
-  background: var(--navy);
-  color: var(--white);
-  font-family: "Montserrat", system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text-strong);
+  font-family: "Geist", system-ui, sans-serif;
   font-weight: 500;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
@@ -43,7 +46,7 @@ a {
 }
 
 a:hover {
-  color: var(--white);
+  color: var(--text-strong);
 }
 
 h1,
@@ -68,7 +71,7 @@ code {
 }
 
 pre {
-  background: var(--navy-deep);
+  background: var(--bg-raised);
   padding: 1rem;
   border-radius: var(--radius);
   overflow-x: auto;
@@ -89,23 +92,17 @@ pre code {
 }
 
 .section-title {
-  text-align: center;
-  font-size: clamp(1.8rem, 4vw, 2.75rem);
-  margin-bottom: 1.2em;
-}
-
-.section-title::before,
-.section-title::after {
-  content: " – ";
+  font-size: clamp(1.5rem, 3vw, 1.9rem);
+  margin-bottom: 1em;
 }
 
 .band {
-  background: var(--cream);
-  color: var(--cream-ink);
+  background: var(--bg-raised);
+  border-block: 1px solid var(--border);
 }
 
 .band a {
-  color: var(--navy);
+  color: var(--gold);
   font-weight: 700;
 }
 
@@ -120,29 +117,29 @@ pre code {
 
 .btn {
   display: inline-block;
-  background: var(--cream);
-  color: var(--navy);
-  font-weight: 700;
+  background: var(--gold);
+  color: var(--bg);
+  font-weight: 600;
   text-decoration: none;
   padding: 0.6em 1.4em;
   border-radius: 999px;
-  border: 2px solid var(--cream);
+  border: 2px solid var(--gold);
   transition: transform 0.15s, background 0.15s, color 0.15s;
 }
 
 .btn:hover {
   transform: translateY(-2px);
-  color: var(--navy);
+  color: var(--bg);
 }
 
 .btn.ghost {
   background: transparent;
-  color: var(--cream);
+  color: var(--gold);
 }
 
 .btn.ghost:hover {
-  background: var(--cream);
-  color: var(--navy);
+  background: var(--gold);
+  color: var(--bg);
 }
 
 .grid {
@@ -152,9 +149,9 @@ pre code {
 }
 
 .card {
-  background: var(--navy-deep);
+  background: var(--card);
+  border: 1px solid var(--border);
   border-radius: var(--radius);
-  box-shadow: var(--shadow);
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -174,7 +171,7 @@ pre code {
 }
 
 .card h3 a {
-  color: var(--white);
+  color: var(--text-strong);
   text-decoration: none;
 }
 
@@ -183,7 +180,7 @@ pre code {
 }
 
 .meta {
-  color: var(--mist);
+  color: var(--muted);
   font-size: 0.85rem;
 }
 
@@ -201,13 +198,14 @@ pre code {
   letter-spacing: 0.02em;
   padding: 0.3em 0.8em;
   border-radius: 999px;
-  background: var(--slate);
-  color: var(--navy-deep);
+  background: var(--border-strong);
+  color: var(--bg-raised);
   white-space: nowrap;
 }
 
 .tag.sts1 {
   background: var(--sts1);
+  color: var(--text-strong);
 }
 
 .tag.sts2 {
@@ -216,8 +214,8 @@ pre code {
 
 .tag.quiet {
   background: transparent;
-  color: var(--mist);
-  box-shadow: inset 0 0 0 1px var(--slate);
+  color: var(--muted);
+  box-shadow: inset 0 0 0 1px var(--border-strong);
 }
 
 .prose {
@@ -244,7 +242,7 @@ pre code {
   margin: 1.5em 0;
   padding: 0.2em 1.2em;
   border-left: 4px solid var(--gold);
-  color: var(--cream);
+  color: var(--text);
   font-style: italic;
 }
 
@@ -258,7 +256,7 @@ pre code {
 .prose td {
   text-align: left;
   padding: 0.55em 0.7em;
-  border-bottom: 1px solid var(--navy-card);
+  border-bottom: 1px solid var(--card);
   vertical-align: top;
 }
 
@@ -275,7 +273,7 @@ pre code {
 }
 
 .page-head p {
-  color: var(--mist);
+  color: var(--muted);
   max-width: 720px;
   font-size: 1.1rem;
 }
