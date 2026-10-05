@@ -2,7 +2,6 @@
 import { getCollection } from "astro:content";
 import Base from "../layouts/Base.astro";
 import Hero from "../components/Hero.astro";
-import TornEdge from "../components/TornEdge.astro";
 import ProjectCard from "../components/ProjectCard.astro";
 import { CATEGORY, SUGGEST_URL, url } from "../lib/labels";
 
@@ -39,7 +38,7 @@ const start = [
     title: "Run data",
     text: "Public run histories for training, evaluating and checking an idea against how people actually play.",
     href: "datasets/",
-    accent: "var(--mist)",
+    accent: "var(--muted)",
   },
 ];
 ---
@@ -61,7 +60,6 @@ const start = [
     </div>
   </section>
 
-  <TornEdge color="var(--cream)" seed={11} />
   <section class="band">
     <div class="wrap section slim">
       <p class="lede">
@@ -70,7 +68,6 @@ const start = [
       </p>
     </div>
   </section>
-  <TornEdge color="var(--cream)" flip seed={23} />
 
   <section class="section">
     <div class="wrap">
@@ -163,19 +160,20 @@ const start = [
     padding: 64px 0;
   }
   .panel {
-    background: rgba(17, 22, 40, 0.82);
-    border-radius: 14px;
+    background: rgba(10, 17, 24, 0.88);
+    border: 1px solid var(--border-strong);
+    border-radius: 12px;
     padding: 34px 38px;
     max-width: 560px;
     box-shadow: var(--shadow);
   }
   .panel h1 {
     font-size: clamp(1.7rem, 3.4vw, 2.5rem);
-    color: var(--cream);
+    color: var(--text);
   }
   .panel p {
     font-size: 1.08rem;
-    color: #e6ecef;
+    color: var(--text-soft);
   }
   .actions {
     display: flex;
@@ -204,19 +202,19 @@ const start = [
   }
   .start-card {
     text-decoration: none;
-    color: var(--white);
+    color: var(--text-strong);
     transition: transform 0.15s;
   }
   .start-card:hover {
     transform: translateY(-4px);
-    color: var(--white);
+    color: var(--text-strong);
   }
   .start-card h3 {
     color: var(--accent);
   }
   .start-card p {
     margin: 0;
-    color: #dce6ec;
+    color: var(--text-soft);
     flex: 1;
   }
   .more {
@@ -238,11 +236,10 @@ const start = [
     grid-template-columns: 1.3fr 1fr;
     gap: 32px;
     align-items: center;
-    background: var(--cream);
-    color: var(--cream-ink);
-    border-radius: 14px;
+    background: var(--card);
+    border: 1px solid var(--border-strong);
+    border-radius: 12px;
     padding: 36px 40px;
-    box-shadow: var(--shadow);
   }
   .mod-box h2 {
     font-size: clamp(1.6rem, 3vw, 2.1rem);
@@ -251,10 +248,8 @@ const start = [
     margin: 0 0 20px;
     font-size: 1.05rem;
   }
-  .mod-box .btn {
-    background: var(--navy);
-    border-color: var(--navy);
-    color: var(--cream);
+  .mod-box p {
+    color: var(--text-soft);
   }
   .mod-games {
     display: grid;
@@ -265,14 +260,15 @@ const start = [
     gap: 8px;
     padding: 18px 20px;
     border-radius: var(--radius);
-    background: var(--navy);
-    color: var(--cream);
+    background: var(--bg-raised);
+    border: 1px solid var(--border);
+    color: var(--text);
     text-decoration: none;
     transition: transform 0.15s;
   }
   .mod-game:hover {
     transform: translateX(4px);
-    color: var(--white);
+    color: var(--text-strong);
   }
   .mod-game.sts1 {
     --accent: var(--sts1);
@@ -301,13 +297,14 @@ const start = [
     align-items: baseline;
     padding: 18px 20px;
     border-radius: var(--radius);
-    background: var(--navy-card);
+    background: var(--card);
+    border: 1px solid var(--border);
     text-decoration: none;
-    color: var(--white);
+    color: var(--text-strong);
   }
   .cat:hover {
-    background: #26506a;
-    color: var(--white);
+    background: var(--card-hover);
+    color: var(--text-strong);
   }
   .n {
     grid-row: span 2;
@@ -320,7 +317,7 @@ const start = [
     font-weight: 700;
   }
   .b {
-    color: var(--mist);
+    color: var(--muted);
     font-size: 0.85rem;
   }
   @media (max-width: 700px) {
