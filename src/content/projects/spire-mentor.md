@@ -19,12 +19,12 @@ Combat uses MCTS with chance nodes, so it does not see upcoming draws or other h
 | Character | A0 | A9 | A10 |
 | --- | --- | --- | --- |
 | Defect | 93.0% | 39.2% | 22.0% |
-| Ironclad | 89.5% | 39.0% | 26.8%* |
+| Ironclad | 89.5% | 39.0% | 30.0%* |
 | Silent | 78.5% | 20.0% | 9.0% |
 | Regent | 67.5% | 15.6% | 6.2% |
 | Necrobinder | 66.5% | 13.8% | 5.6% |
 
-\* Ironclad A10 is newer: 107/400 runs (95% CI 22.6–31.3%), measured 26 October 2026 at 4,000 sims (16,000 at bosses) after an A10-focused PPO continuation and a behavior-cloned move prior for elite and boss fights. Its other cells predate those changes.
+\* Ironclad A10 is newer: 120/400 runs (95% CI 25.7–34.7%), measured 31 October 2026 at 4,000 sims (16,000 at bosses) with a further 300-iteration A10 PPO continuation. It also includes an engine fix: the simulator used to give rewards after the first of the two A10 final bosses, where the game gives none. That fix lowered every A10 rate, so the other A10 cells are somewhat high. Ironclad's other cells predate the recent A10 work.
 
 The gaps between characters mostly reflect training effort, not a ceiling. Development currently pushes one character, Ironclad, as far as possible before returning to the others, and the lower rows haven't been retrained since.
 
